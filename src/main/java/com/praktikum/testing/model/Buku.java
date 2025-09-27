@@ -114,11 +114,11 @@ public class Buku {
                 '}';
     }
 
-    public String getPenulis() {
-        return "";
+    public boolean isTersedia() {
+        return jumlahTersedia > 0;
     }
 
-    public boolean isTersedia() {
-        return false;
+    public String getPenulis() {
+        return null;
     }
 }

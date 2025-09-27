@@ -82,9 +82,8 @@ public class ValidationUtilsTest {
     }
 
     @Test
-    @DisplayName("Anggota valid harus mengembalikan true")
     void testAnggotaValid() {
-        Anggota anggota = new Anggota("A001", "John Doe", "john@univ.ac.id", "08123456789", Anggota.TipeAnggota.MAHASISWA);
+    Anggota anggota = new Anggota("A001", "John Doe", "john@univ.ac.id", "08123456789", Anggota.TipeAnggota.MAHASISWA);
         assertTrue(ValidationUtils.isValidAnggota(anggota));
     }
 

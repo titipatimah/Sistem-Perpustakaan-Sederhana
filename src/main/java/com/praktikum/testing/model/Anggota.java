@@ -107,12 +107,12 @@ public class Anggota {
     }
 
     public int getBatasPinjam() {
-        switch (tipeAnggota) {
-            case MAHASISWA: return 3;
-            case DOSEN: return 10;
-            case UMUM: return 2;
-            default: return 0;
-        }
+        return switch (tipeAnggota) {
+            case MAHASISWA -> 3;
+            case DOSEN -> 10;
+            case UMUM -> 2;
+            default -> 0;
+        };
     }
 
     public boolean bolehPinjamLagi() {

@@ -71,9 +71,11 @@ public class KalkulatorDenda {
     }
 
     public boolean adaDenda(Peminjaman peminjamanTerlambat) {
+        return false;
     }
 
     public String getDeskripsiDenda(double v) {
 
+        return "";
     }
 }

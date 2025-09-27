@@ -1,11 +1,17 @@
 package com.praktikum.testing.repository;
 
+import com.praktikum.testing.model.Buku;
+
 import java.util.List;
 import java.util.Optional;
 
 public interface RepositoryBuku {
     // Simpan buku baru
     <Buku> boolean simpan(Buku buku);
+
+    <Buku> boolean simpan(com.praktikum.testing.model.Buku buku);
+
+    boolean simpan(Buku buku);
 
     // Cari buku berdasarkan ISBN
     <Buku> Optional<Buku> cariByIsbn(String isbn);

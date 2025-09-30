@@ -91,12 +91,12 @@ public class Peminjaman {
 
     public long getHariTerlambat() {
         if (sudahDikembalikan) {
-            return ChronoUnit.DAYS.between(tanggalJatuhTempo, tanggalKembali) > 0
+            return tanggalKembali.isAfter(tanggalJatuhTempo)
                     ? ChronoUnit.DAYS.between(tanggalJatuhTempo, tanggalKembali) : 0;
         }
-        LocalDate hari_ini = LocalDate.now();
-        return hari_ini.isAfter(tanggalJatuhTempo)
-                ? ChronoUnit.DAYS.between(tanggalJatuhTempo, hari_ini) : 0;
+        LocalDate hariIni = LocalDate.now();
+        return hariIni.isAfter(tanggalJatuhTempo)
+                ? ChronoUnit.DAYS.between(tanggalJatuhTempo, hariIni) : 0;
     }
 
     public long getDurasiPeminjaman() {

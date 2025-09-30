@@ -1,5 +1,6 @@
 package com.praktikum.testing.util;
-import com.praktikum.testing.model.Buku;
+
+import com.praktikum.testing.model.book;
 import com.praktikum.testing.model.Anggota;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,19 +9,19 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("Unit Test untuk ValidationUtils")
+@DisplayName("Test Validasi Utilitas")
 public class ValidationUtilsTest {
 
     @Test
     @DisplayName("Email valid harus mengembalikan true")
     void testEmailValid() {
         assertTrue(ValidationUtils.isValidEmail("mahasiswa@univ.ac.id"));
-        assertTrue(ValidationUtils.isValidEmail("test@email.com"));
+        assertTrue(ValidationUtils.isValidEmail("test@gmail.com"));
         assertTrue(ValidationUtils.isValidEmail("user123@domain.org"));
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"", " ", "email-tanpa-at.com", "email9", "@domain.com", "email@@domain.com"})
+    @ValueSource(strings = {"", " ", "email-tanpa-at.com", "email@", "@domain.com", "email@domain"})
     @DisplayName("Email tidak valid harus mengembalikan false")
     void testEmailTidakValid(String emailTidakValid) {
         assertFalse(ValidationUtils.isValidEmail(emailTidakValid));
@@ -36,12 +37,12 @@ public class ValidationUtilsTest {
     @DisplayName("Nomor telepon valid harus mengembalikan true")
     void testNomorTeleponValid() {
         assertTrue(ValidationUtils.isValidNomorTelepon("08123456789"));
-        assertTrue(ValidationUtils.isValidNomorTelepon("08523456789"));
-        assertTrue(ValidationUtils.isValidNomorTelepon("03123456789"));
+        assertTrue(ValidationUtils.isValidNomorTelepon("+628123456789"));
+        assertTrue(ValidationUtils.isValidNomorTelepon("0812-3456-7890"));
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"", " ", "123456789", "07123456789", "081234", "02123456789"})
+    @ValueSource(strings = {"", " ", "123456789", "07123456789", "081234", "+627123456789"})
     @DisplayName("Nomor telepon tidak valid harus mengembalikan false")
     void testNomorTeleponTidakValid(String teleponTidakValid) {
         assertFalse(ValidationUtils.isValidNomorTelepon(teleponTidakValid));
@@ -58,7 +59,7 @@ public class ValidationUtilsTest {
     @Test
     @DisplayName("Buku valid harus mengembalikan true")
     void testBukuValid() {
-        Buku buku = new Buku("1234567890", "Pemrograman Java", "John Doe", 5, 130000.0);
+        book buku = new book("1234567890", "Pemrograman Java", "John Doe", 5, 150000.0);
         assertTrue(ValidationUtils.isValidBuku(buku));
     }
 
@@ -69,44 +70,45 @@ public class ValidationUtilsTest {
         assertFalse(ValidationUtils.isValidBuku(null));
 
         // ISBN tidak valid
-        Buku bukuIsbnTidakValid = new Buku("123", "Judul", "Pengarang", 5, 100000.0);
+        book bukuIsbnTidakValid = new book("123", "Judul", "Pengarang", 5, 100000.0);
         assertFalse(ValidationUtils.isValidBuku(bukuIsbnTidakValid));
 
-        // Jumlah negatif
-        Buku bukuJumlahNegatif = new Buku("1234567890", "Judul", "Pengarang", -1, 0);
+        // Jumlah total negatif
+        book bukuJumlahNegatif = new book("1234567890", "Judul", "Pengarang", -1, 100000.0);
         assertFalse(ValidationUtils.isValidBuku(bukuJumlahNegatif));
 
         // Harga negatif
-        Buku bukuHargaNegatif = new Buku("1234567890", "Judul", "Pengarang", 5, -1000.0);
+        book bukuHargaNegatif = new book("1234567890", "Judul", "Pengarang", 5, -100000.0);
         assertFalse(ValidationUtils.isValidBuku(bukuHargaNegatif));
     }
 
     @Test
+    @DisplayName("Anggota valid harus mengembalikan true")
     void testAnggotaValid() {
-    Anggota anggota = new Anggota("A001", "John Doe", "john@univ.ac.id", "08123456789", Anggota.TipeAnggota.MAHASISWA);
+        Anggota anggota = new Anggota("A001", "John Doe", "john@univ.ac.id",
+                "081234567890", Anggota.TipeAnggota.MAHASISWA);
         assertTrue(ValidationUtils.isValidAnggota(anggota));
     }
 
     @Test
     @DisplayName("String valid harus mengembalikan true")
     void testStringValid() {
-        assertTrue(ValidationUtils.isValidString("text"));
-        assertTrue(ValidationUtils.isValidString("text dengan spasi"));
+        assertTrue(ValidationUtils.isValidString("teks"));
+        assertTrue(ValidationUtils.isValidString(" teks dengan spasi "));
         assertFalse(ValidationUtils.isValidString(""));
-        assertFalse(ValidationUtils.isValidString(" "));
+        assertFalse(ValidationUtils.isValidString("   "));
         assertFalse(ValidationUtils.isValidString(null));
     }
 
     @Test
     @DisplayName("Angka positif dan non-negatif harus valid")
     void testValidasiAngka() {
-        assertTrue(ValidationUtils.isAngkaPositif((int) 1.0));
-        assertTrue(ValidationUtils.isAngkaPositif((int) 100.5));
-        assertFalse(ValidationUtils.isAngkaPositif((int) 0.0));
-        assertFalse(ValidationUtils.isAngkaPositif((int) -1.0));
-
+        assertTrue(ValidationUtils.isAngkaPositif(1.0));
+        assertTrue(ValidationUtils.isAngkaPositif(0.1));
+        assertFalse(ValidationUtils.isAngkaPositif(0.0));
+        assertFalse(ValidationUtils.isAngkaPositif(-1.0));
         assertTrue(ValidationUtils.isAngkaNonNegatif(0.0));
         assertTrue(ValidationUtils.isAngkaNonNegatif(1.0));
-        assertFalse(ValidationUtils.isAngkaNonNegatif(-0.1));
+        assertFalse(ValidationUtils.isAngkaNonNegatif(-1.0));
     }
 }

@@ -2,7 +2,7 @@ package com.praktikum.testing.model;
 
 import java.util.Objects;
 
-public class Buku {
+public class book {
     private String isbn;
     private String judul;
     private String pengarang;
@@ -10,17 +10,15 @@ public class Buku {
     private int jumlahTersedia;
     private double harga;
 
-    // Constructor kosong
-    public Buku() {
+    public book() {
     }
 
-    // Constructor lengkap
-    public Buku(String isbn, String judul, String pengarang, int jumlahTotal, double harga) {
+    public book(String isbn, String judul, String pengarang, int jumlahTotal, double harga) {
         this.isbn = isbn;
         this.judul = judul;
         this.pengarang = pengarang;
         this.jumlahTotal = jumlahTotal;
-        this.jumlahTersedia = jumlahTotal; // awalnya semua tersedia
+        this.jumlahTersedia = jumlahTotal;
         this.harga = harga;
     }
 
@@ -73,27 +71,15 @@ public class Buku {
         this.harga = harga;
     }
 
-    // Kurangi jumlah tersedia (untuk pinjam buku)
-    public boolean pinjamBuku() {
-        if (jumlahTersedia > 0) {
-            jumlahTersedia--;
-            return true;
-        }
-        return false;
-    }
-
-    // Tambah jumlah tersedia (untuk kembalikan buku)
-    public void kembalikanBuku() {
-        if (jumlahTersedia < jumlahTotal) {
-            jumlahTersedia++;
-        }
+    public boolean isTersedia() {
+        return jumlahTersedia > 0;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Buku)) return false;
-        Buku buku = (Buku) o;
+        if (o == null || getClass() != o.getClass()) return false;
+        book buku = (book) o;
         return Objects.equals(isbn, buku.isbn);
     }
 
@@ -112,13 +98,5 @@ public class Buku {
                 ", jumlahTersedia=" + jumlahTersedia +
                 ", harga=" + harga +
                 '}';
-    }
-
-    public boolean isTersedia() {
-        return jumlahTersedia > 0;
-    }
-
-    public String getPenulis() {
-        return null;
     }
 }

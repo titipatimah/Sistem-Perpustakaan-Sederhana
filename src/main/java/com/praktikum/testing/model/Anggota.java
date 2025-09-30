@@ -1,7 +1,6 @@
 package com.praktikum.testing.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,18 +12,6 @@ public class Anggota {
     private TipeAnggota tipeAnggota;
     private List<String> idBukuDipinjam;
     private boolean aktif;
-
-    public String getAnggotaID() {
-        return "";
-    }
-
-    public boolean isBolehPinjamLagi() {
-        return false;
-    }
-
-    public Collection<Object> getBukuDipinjam() {
-        return List.of();
-    }
 
     public enum TipeAnggota {
         MAHASISWA, DOSEN, UMUM
@@ -107,12 +94,12 @@ public class Anggota {
     }
 
     public int getBatasPinjam() {
-        return switch (tipeAnggota) {
-            case MAHASISWA -> 3;
-            case DOSEN -> 10;
-            case UMUM -> 2;
-            default -> 0;
-        };
+        switch (tipeAnggota) {
+            case MAHASISWA: return 3;
+            case DOSEN: return 10;
+            case UMUM: return 2;
+            default: return 0;
+        }
     }
 
     public boolean bolehPinjamLagi() {
@@ -150,7 +137,7 @@ public class Anggota {
                 ", email='" + email + '\'' +
                 ", telepon='" + telepon + '\'' +
                 ", tipeAnggota=" + tipeAnggota +
-                ", idBukuDipinjam=" + idBukuDipinjam.size() +
+                ", jumlahBukuDipinjam=" + idBukuDipinjam.size() +
                 ", aktif=" + aktif +
                 '}';
     }

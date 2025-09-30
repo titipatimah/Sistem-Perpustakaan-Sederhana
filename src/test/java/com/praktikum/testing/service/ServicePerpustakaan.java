@@ -11,17 +11,19 @@ import java.util.Optional;
 public class ServicePerpustakaan {
 
     private final repositorybuku repositoryBuku;
+    private final KalkulatorDenda kalkulatorDenda;
 
     public ServicePerpustakaan(repositorybuku repositoryBuku, KalkulatorDenda kalkulatorDenda) {
         this.repositoryBuku = repositoryBuku;
+        this.kalkulatorDenda = kalkulatorDenda;
     }
 
+    // ==================== Tambah Buku ====================
     public boolean tambahBuku(book buku) {
         if (!ValidationUtils.isValidBuku(buku)) {
             return false;
         }
 
-        // Cek apakah buku dengan ISBN yang sama sudah ada
         Optional<book> bukuExisting = repositoryBuku.cariByIsbn(buku.getIsbn());
         if (bukuExisting.isPresent()) {
             return false; // Buku sudah ada
@@ -30,17 +32,18 @@ public class ServicePerpustakaan {
         return repositoryBuku.simpan(buku);
     }
 
+    // ==================== Hapus Buku ====================
     public boolean hapusBuku(String isbn) {
         if (!ValidationUtils.isValidISBN(isbn)) {
             return false;
         }
 
         Optional<book> buku = repositoryBuku.cariByIsbn(isbn);
-        if (buku.isEmpty()) {
+        if (!buku.isPresent()) {
             return false; // Buku tidak ditemukan
         }
 
-        // Cek apakah ada salinan yang sedang dipinjam
+        // Cek apakah ada yang sedang dipinjam
         if (buku.get().getJumlahTersedia() < buku.get().getJumlahTotal()) {
             return false; // Tidak bisa hapus karena ada yang dipinjam
         }
@@ -48,6 +51,7 @@ public class ServicePerpustakaan {
         return repositoryBuku.hapus(isbn);
     }
 
+    // ==================== Cari Buku ====================
     public Optional<book> cariBukuByIsbn(String isbn) {
         if (!ValidationUtils.isValidISBN(isbn)) {
             return Optional.empty();
@@ -63,6 +67,7 @@ public class ServicePerpustakaan {
         return repositoryBuku.cariByPengarang(pengarang);
     }
 
+    // ==================== Ketersediaan Buku ====================
     public boolean bukuTersedia(String isbn) {
         Optional<book> buku = repositoryBuku.cariByIsbn(isbn);
         return buku.isPresent() && buku.get().isTersedia();
@@ -73,6 +78,7 @@ public class ServicePerpustakaan {
         return buku.map(book::getJumlahTersedia).orElse(0);
     }
 
+    // ==================== Pinjam Buku ====================
     public boolean pinjamBuku(String isbn, Anggota anggota) {
         // Validasi anggota
         if (!ValidationUtils.isValidAnggota(anggota) || !anggota.isAktif()) {
@@ -86,7 +92,7 @@ public class ServicePerpustakaan {
 
         // Cek ketersediaan buku
         Optional<book> bukuOpt = repositoryBuku.cariByIsbn(isbn);
-        if (bukuOpt.isEmpty() || !bukuOpt.get().isTersedia()) {
+        if (!bukuOpt.isPresent() || !bukuOpt.get().isTersedia()) {
             return false;
         }
 
@@ -101,9 +107,10 @@ public class ServicePerpustakaan {
         return false;
     }
 
+    // ==================== Kembalikan Buku ====================
     public boolean kembalikanBuku(String isbn, Anggota anggota) {
         // Validasi
-        if (!ValidationUtils.IsValidISBN(isbn) || anggota == null) {
+        if (!ValidationUtils.isValidISBN(isbn) || anggota == null) {
             return false;
         }
 
@@ -113,7 +120,7 @@ public class ServicePerpustakaan {
         }
 
         Optional<book> bukuOpt = repositoryBuku.cariByIsbn(isbn);
-        if (bukuOpt.isEmpty()) {
+        if (!bukuOpt.isPresent()) {
             return false;
         }
 

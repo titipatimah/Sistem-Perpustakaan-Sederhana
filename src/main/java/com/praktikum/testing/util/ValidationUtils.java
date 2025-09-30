@@ -1,6 +1,6 @@
 package com.praktikum.testing.util;
 
-import com.praktikum.testing.model.Buku;
+import com.praktikum.testing.model.book;
 import com.praktikum.testing.model.Anggota;
 
 public class ValidationUtils {
@@ -12,7 +12,7 @@ public class ValidationUtils {
         }
 
         // Validasi email sederhana
-        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
         return email.matches(emailRegex);
     }
 
@@ -25,8 +25,7 @@ public class ValidationUtils {
         // Hapus semua spasi dan tanda hubung
         String teleponBersih = telepon.replaceAll("[\\s-]", "");
 
-        // Nomor telepon Indonesia harus dimulai dengan 08 atau +628
-        // dan panjangnya 10-13 digit
+        // Nomor telepon Indonesia harus dimulai dengan 08 atau +628 dan memiliki 10-13 digit
         return teleponBersih.matches("^(08|\\+628)[0-9]{8,11}$");
     }
 
@@ -40,21 +39,22 @@ public class ValidationUtils {
         String isbnBersih = isbn.replaceAll("[\\s-]", "");
 
         // Harus berupa 10 atau 13 digit
-        return isbnBersih.matches("[0-9]{10}") || isbnBersih.matches("[0-9]{13}");
+        return isbnBersih.matches("^[0-9]{10}$") || isbnBersih.matches("^[0-9]{13}$");
     }
 
     // Validasi Buku
-    public static boolean isValidBuku(Buku buku) {
+    public static boolean isValidBuku(book buku) {
         if (buku == null) {
             return false;
         }
 
         return isValidISBN(buku.getIsbn()) &&
                 isValidString(buku.getJudul()) &&
-                isValidString(buku.getPenulis()) &&
+                isValidString(buku.getPengarang()) &&
+                buku.getJumlahTotal() > 0 &&
                 buku.getJumlahTersedia() >= 0 &&
                 buku.getJumlahTersedia() <= buku.getJumlahTotal() &&
-                isValidAngkaPositif(buku.getHarga());
+                buku.getHarga() >= 0;
     }
 
     // Validasi Anggota
@@ -63,19 +63,20 @@ public class ValidationUtils {
             return false;
         }
 
-        return isValidString(anggota.getNama()) &&
-                isValidString(anggota.getAnggotaID()) &&
+        return isValidString(anggota.getIdAnggota()) &&
+                isValidString(anggota.getNama()) &&
                 isValidEmail(anggota.getEmail()) &&
-                isValidNomorTelepon(anggota.getTelepon());
+                isValidNomorTelepon(anggota.getTelepon()) &&
+                anggota.getTipeAnggota() != null;
     }
 
-    // Validasi string (tidak null dan tidak kosong setelah trim)
+    // Validasi String (tidak null dan tidak kosong setelah trim)
     public static boolean isValidString(String str) {
         return str != null && !str.trim().isEmpty();
     }
 
     // Validasi angka positif
-    public static boolean isValidAngkaPositif(double angka) {
+    public static boolean isAngkaPositif(double angka) {
         return angka > 0;
     }
 
@@ -84,11 +85,7 @@ public class ValidationUtils {
         return angka >= 0;
     }
 
-    public static boolean isValidNISN(String number) {
-        return false;
-    }
-
-    public static boolean isAngkaPositif(int i) {
+    public static boolean IsValidISBN(String isbn) {
         return false;
     }
 }

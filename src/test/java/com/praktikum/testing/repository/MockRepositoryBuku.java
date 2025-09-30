@@ -1,6 +1,7 @@
 package com.praktikum.testing.repository;
 
-import com.praktikum.testing.model.Buku;
+import com.praktikum.testing.model.book;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -8,64 +9,90 @@ import java.util.stream.Collectors;
 /**
  * Mock implementation dari RepositoryBuku untuk keperluan testing
  * Menggunakan in-memory storage dengan ConcurrentHashMap
+ *
+ * Catatan: Ini hanya untuk demo! Dalam test yang sebenarnya,
+ * sebaiknya gunakan Mockito untuk mocking repository.
  */
-public class MockRepositoryBuku implements RepositoryBuku {
-
-    private final Map<String, Buku> bukuMap = new ConcurrentHashMap<>();
+public class MockRepositoryBuku implements repositorybuku {
+    private final Map<String, book> bukuMap = new ConcurrentHashMap<>();
 
     @Override
-    public boolean simpan(Buku buku) {
-        if (buku == null || buku.getIsbn() == null || buku.getIsbn().trim().isEmpty()) {
+    public boolean simpan(book buku) {
+        if (buku == null || buku.getIsbn() == null) {
             return false;
         }
-        bukuMap.put(buku.getIsbn(), buku); // overwrite kalau ISBN sudah ada
+
+        // Simulasi operasi simpan ke database
+        bukuMap.put(buku.getIsbn(), buku);
         return true;
     }
 
     @Override
-    public Optional<Buku> cariByIsbn(String isbn) {
-        if (isbn == null) return Optional.empty();
-        return Optional.ofNullable(bukuMap.get(isbn));
+    public Optional<book> cariByIsbn(String isbn) {
+        if (isbn == null) {
+            return Optional.empty();
+        }
+        book buku = bukuMap.get(isbn);
+        return Optional.ofNullable(buku);
     }
 
     @Override
-    public List<Buku> cariByJudul(String judul) {
-        if (judul == null || judul.trim().isEmpty()) return new ArrayList<>();
+    public List<book> cariByJudul(String judul) {
+        if (judul == null || judul.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
         return bukuMap.values().stream()
-                .filter(b -> b.getJudul().toLowerCase().contains(judul.toLowerCase().trim()))
+                .filter(buku -> buku.getJudul().toLowerCase()
+                        .contains(judul.toLowerCase().trim()))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<Buku> cariByPengarang(String pengarang) {
-        if (pengarang == null || pengarang.trim().isEmpty()) return new ArrayList<>();
+    public List<book> cariByPengarang(String pengarang) {
+        if (pengarang == null || pengarang.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
         return bukuMap.values().stream()
-                .filter(b -> b.getPengarang().toLowerCase().contains(pengarang.toLowerCase().trim()))
+                .filter(buku -> buku.getPengarang().toLowerCase()
+                        .contains(pengarang.toLowerCase().trim()))
                 .collect(Collectors.toList());
     }
 
     @Override
     public boolean hapus(String isbn) {
-        if (isbn == null) return false;
-        return bukuMap.remove(isbn) != null;
+        if (isbn == null) {
+            return false;
+        }
+        book bukuDihapus = bukuMap.remove(isbn);
+        return bukuDihapus != null;
     }
 
     @Override
     public boolean updateJumlahTersedia(String isbn, int jumlahTersediaBaru) {
-        if (isbn == null || jumlahTersediaBaru < 0) return false;
-        Buku buku = bukuMap.get(isbn);
-        if (buku == null) return false;
-        if (jumlahTersediaBaru > buku.getJumlahTotal()) return false;
+        if (isbn == null || jumlahTersediaBaru < 0) {
+            return false;
+        }
+
+        book buku = bukuMap.get(isbn);
+        if (buku == null) {
+            return false;
+        }
+
+        // Cek apakah jumlah tersedia baru valid
+        if (jumlahTersediaBaru > buku.getJumlahTotal()) {
+            return false;
+        }
+
         buku.setJumlahTersedia(jumlahTersediaBaru);
         return true;
     }
 
     @Override
-    public List<Buku> cariSemua() {
+    public List<book> cariSemua() {
         return new ArrayList<>(bukuMap.values());
     }
 
-    // ===================== Utility khusus testing =====================
+    // Utility methods untuk testing
     public void bersihkan() {
         bukuMap.clear();
     }
